@@ -6,6 +6,7 @@ import wX from "../wX";
 import { displayFormat } from "../ui/portal";
 
 import { WLPortal } from "./portal";
+import { WasabeeMe } from "../model";
 
 export const WLAnchor = WLPortal.extend({
   type: "anchor",
@@ -49,7 +50,20 @@ export const WLAnchor = WLPortal.extend({
     const requiredKeys = L.DomUtil.create("div", "desc", content);
     const onHand = operation.KeysOnHandForPortal(portal.id);
     const required = operation.KeysRequiredForPortal(portal.id);
-    requiredKeys.textContent = wX("popup.anchor.keys", { onHand, required });
+
+    if (WasabeeMe.isLoggedIn()) {
+      const myCount = operation.KeysOnHandForPortal(
+        portal.id,
+        WasabeeMe.localGet().id
+      );
+      requiredKeys.textContent = wX("popup.anchor.keys_mycount", {
+        onHand,
+        myCount,
+        required,
+      });
+    } else {
+      requiredKeys.textContent = wX("popup.anchor.keys", { onHand, required });
+    }
 
     const buttonSet = L.DomUtil.create(
       "div",

@@ -1155,9 +1155,11 @@ export default class WasabeeOp extends Evented implements IOperation {
     this.update(false);
   }
 
-  KeysOnHandForPortal(portalId: PortalID) {
+  KeysOnHandForPortal(portalId: PortalID, gid?: GoogleID) {
     let i = 0;
-    for (const k of this.keysonhand) if (k.portalId == portalId) i += k.onhand;
+    for (const k of this.keysonhand) {
+      if (k.portalId === portalId && (!gid || gid === k.gid)) i += k.onhand;
+    }
     return i;
   }
 
