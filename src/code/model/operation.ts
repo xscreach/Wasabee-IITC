@@ -862,7 +862,11 @@ export default class WasabeeOp extends Evented implements IOperation {
     this.updateBlockers();
   }
 
-  addMarker(markerType: string, portal: WasabeePortal, options) {
+  addMarker(markerType: string, portal: WasabeePortal, options: {
+    comment?: string;
+    zone?: ZoneID;
+    assign?: GoogleID;
+  } = {}) {
     if (!portal) return false;
 
     // save a trip to update()
@@ -873,7 +877,7 @@ export default class WasabeeOp extends Evented implements IOperation {
     });
     if (options && options.comment) marker.comment = options.comment;
     if (options && options.zone) marker.zone = options.zone;
-    if (options && options.assign && options.assign != 0)
+    if (options && options.assign)
       marker.assign(options.assign);
     this.markers.push(marker);
 
