@@ -108,6 +108,7 @@ const UploadButton = WButton.extend({
     } catch (e) {
       // not triggered this in a while...
       console.warn(e.toString() + ": trying as update");
+      operation.creator = WasabeeMe.localGet().id;
       this.doUpdate(operation);
     }
   },
