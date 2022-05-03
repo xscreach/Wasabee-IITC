@@ -3,7 +3,12 @@ import wX from "../wX";
 import { displayFormat as displayPortal, getSelected } from "./portal";
 import { displayError } from "../error";
 
-import { WasabeeOp, WasabeeMarker, WasabeePortal, WasabeeBlocker } from "../model";
+import {
+  WasabeeOp,
+  WasabeeMarker,
+  WasabeePortal,
+  WasabeeBlocker,
+} from "../model";
 
 export function displayFormat(marker: WasabeeMarker, operation: WasabeeOp) {
   const portal = operation.getPortal(marker.portalId);
@@ -39,7 +44,6 @@ export function deleteMarker(
   });
   con.enable();
 }
-
 
 export function swapMarker(operation: WasabeeOp, marker: WasabeeMarker) {
   const selectedPortal = getSelected();
