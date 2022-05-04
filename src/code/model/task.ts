@@ -113,4 +113,13 @@ export default class Task {
       this.state = "assigned";
     }
   }
+
+  after(taskID: TaskID) {
+    if (!this.dependsOn.find((id) => id === taskID))
+      this.dependsOn.push(taskID);
+  }
+
+  unafter(taskID: TaskID) {
+    this.dependsOn = this.dependsOn.filter((id) => id !== taskID);
+  }
 }
