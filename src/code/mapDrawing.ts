@@ -36,6 +36,7 @@ function updateMarkers(op: WasabeeOp) {
   // add any new ones, remove any existing from the list
   // markers don't change, so this doesn't need to be too smart
   for (const m of op.markers) {
+    if (m.isPhaseMarker()) continue;
     if (!isFiltered(m)) continue;
     if (layerMap.has(m.ID)) {
       const ll = Wasabee.markerLayerGroup.getLayer(layerMap.get(m.ID));

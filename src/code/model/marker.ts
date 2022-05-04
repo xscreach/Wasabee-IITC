@@ -1,4 +1,5 @@
 import Task from "./task";
+import { generateId } from "./utils";
 
 const markers = {
   MARKER_TYPE_CAPTURE: "CapturePortalMarker",
@@ -40,11 +41,17 @@ const iconTypes = {
   UseVirusPortalAlert: "virus",
 };
 
+interface MarkerAttribute {
+  ID: string;
+  name: string;
+  value: string;
+}
+
 export default class WasabeeMarker extends Task {
   portalId: PortalID;
-  type: string;
+  type: keyof typeof iconTypes;
   // future compatibility
-  attributes?: any[];
+  attributes?: MarkerAttribute[];
 
   // static properties is not supported by eslint yet
   static get markerTypes() {
@@ -83,5 +90,48 @@ export default class WasabeeMarker extends Task {
 
   static isDestructMarkerType(type) {
     return destructMarkerTypes.includes(type);
+  }
+
+  /** Create a phase marker pair */
+  static createPhasePair(portalId: PortalID): [WasabeeMarker, WasabeeMarker] {
+    const startID = generateId();
+    const endID = generateId();
+    const start = new WasabeeMarker({
+      ID: startID,
+      portalId: portalId,
+      type: "OtherPortalAlert",
+      attributes: [
+        { ID: generateId(), name: "type", value: "phase" },
+        { ID: generateId(), name: "subtype", value: "start" },
+        { ID: generateId(), name: "pair", value: endID },
+      ],
+    });
+    const end = new WasabeeMarker({
+      ID: endID,
+      portalId: portalId,
+      type: "OtherPortalAlert",
+      attributes: [
+        { ID: generateId(), name: "type", value: "phase" },
+        { ID: generateId(), name: "subtype", value: "end" },
+        { ID: generateId(), name: "pair", value: startID },
+      ],
+      dependsOn: [startID],
+    });
+    return [start, end];
+  }
+
+  isPhaseMarker() {
+    if (this.type !== "OtherPortalAlert") return false;
+    if (!this.attributes) return false;
+    return !!this.attributes.find(
+      (a) => a.name === "type" && a.value === "phase"
+    );
+  }
+
+  getPairedMarkerID() {
+    if (this.isPhaseMarker()) {
+      return this.attributes.find((a) => a.name === "pair").value;
+    }
+    return null;
   }
 }
